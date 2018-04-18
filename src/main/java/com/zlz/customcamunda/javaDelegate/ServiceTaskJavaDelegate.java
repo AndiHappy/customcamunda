@@ -37,6 +37,13 @@ public class ServiceTaskJavaDelegate implements JavaDelegate {
     	log.info("执行体:{}",execution.getCurrentActivityName());
     	
     	log.info("执行:{}",execution);
+    	
+    	execution.setVariable("myDelegateBean", new com.zlz.customcamunda.behavior.CustomeActivityBehavior());
+    }
+    
+    public String cal(String value){
+    	System.out.println(value);
+    	return "hello";
     }
 
 }

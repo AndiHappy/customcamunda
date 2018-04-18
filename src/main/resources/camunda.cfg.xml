@@ -66,7 +66,7 @@
 	<!-- Engine的扩展的RepositoryService服务 -->
 	<bean id="customRepositoryService" class="com.zlz.customcamunda.server.CustomRepositoryService"></bean>
 	
-
+	<bean id="myDelegateBean" class="com.zlz.customcamunda.javaDelegate.ServiceTaskJavaDelegate" />
 	<bean id="processEngineConfiguration" class="com.zlz.customcamunda.FlowEngine">
 
 		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/customcamunda?useSSL=false" />

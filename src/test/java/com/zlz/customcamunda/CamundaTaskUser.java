@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -34,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.zlz.customcamunda.javaDelegate.ServiceTaskJavaDelegate;
 import com.zlz.customcamunda.util.PropertiesUtil;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:camunda.cfg.xml")
@@ -73,18 +75,62 @@ public class CamundaTaskUser {
 				log.info("deployid:{}", deployid);
 				this.prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployid).singleResult();
 				log.info("初始化引擎:{}", this.prodef.getId());
-				
-				ProcessInstance instance = engine.getRuntimeService().startProcessInstanceById(this.prodef.getId());
-				
-				log.info("instance: {} started!",instance.getId());
+
+				Map<String, Object> variables = new HashMap<String, Object>();
+				variables.put("myDelegateBean", new ServiceTaskJavaDelegate());
+				ProcessInstance instance = engine.getRuntimeService().startProcessInstanceById(this.prodef.getId(),variables);
+
+				log.info("instance: {} started!", instance.getId());
 				util.setPropertiesValue("instanceId", instance.getId());
-				
-				
+
 				ProcessInstanceWithVariablesImpl instancetmp = (ProcessInstanceWithVariablesImpl) instance;
 				List<TaskEntity> tasks = instancetmp.getExecutionEntity().getTasks();
 				TaskEntity task = tasks.get(0);
-				log.info("todo task:{}",task);
-				
+				log.info("todo task:{}", task);
+
+				String taskId = task.getId();
+				util.setPropertiesValue("taskId", taskId);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testStartServiceProcessDef() {
+		try {
+			// 准备流程定义，加载到测试用例中
+			engine.buildProcessEngine();
+			log.info("初始化引擎");
+
+			// 校验流程文件
+			resourceName = "./bpmn/servicetask.bpmn";
+			InputStream inputStream = new FileInputStream(new File(resourceName));
+			Deployment deployment = engine.getRepositoryService().createDeployment().addInputStream(resourceName, inputStream).deploy();
+			String deployid = deployment.getId();
+			log.info("deployid:{}", deployid);
+			this.prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployid).singleResult();
+			log.info("初始化引擎:{}", this.prodef.getId());
+
+			ProcessInstance instance = engine.getRuntimeService().startProcessInstanceById(this.prodef.getId());
+
+			log.info("instance: {} started!", instance.getId());
+			util.setPropertiesValue("instanceId", instance.getId());
+
+			ProcessInstanceWithVariablesImpl instancetmp = (ProcessInstanceWithVariablesImpl) instance;
+			List<TaskEntity> tasks = instancetmp.getExecutionEntity().getTasks();
+			if(!tasks.isEmpty()){
+				TaskEntity task = tasks.get(0);
+				log.info("todo task:{}", task);
+
+				String taskId = task.getId();
+				util.setPropertiesValue("taskId", taskId);
+				engine.getTaskService().complete(taskId);
+			}
+			
+
+			TaskEntity task = (TaskEntity) engine.getTaskService().createTaskQuery().processInstanceId(instance.getId()).singleResult();
+			if(task != null){
 				String taskId = task.getId();
 				util.setPropertiesValue("taskId", taskId);
 			}
