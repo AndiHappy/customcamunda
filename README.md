@@ -9,4 +9,6 @@ camunda流程引擎扩展，支持中国方式的流程运转，流程定义
 	
 3. 发现camunda已经能够代码构建bpmnModel，所以直接使用：Bpmn.readModelFrom*** 来校验BPMN文件的正确性
 
+4. 确认Service task的配置，代理类的用法，具体的说明在WIKI里面
+
 
