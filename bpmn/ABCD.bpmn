@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xs="http://www.w3.org/2001/XMLSchema" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="Definitions_1" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.4.Final-v20160330-1625-B110">
+  <process id="gzq-41b17af6-c027-61a8-91ee-1d68bcaed84b" name="template" isExecutable="true">
+    <userTask id="usertask0" name="部门主管" activiti:assignee="GZQ-ROLE-SUPERIOR">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.chanjet.gongzuoquan.workflow.activiticustom.TaskCustomService">
+          <activiti:field name="informPerson">
+            <activiti:string><![CDATA[6000004545,GZQ-ROLE-32424124124141,GZQ-ROLE-3242412412490]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <startEvent id="gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746" name="流程开始"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746" targetRef="usertask0"></sequenceFlow>
+    <userTask id="usertask1" name="部门主管" activiti:assignee="GZQ-ROLE-SUPERIOR">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.chanjet.gongzuoquan.workflow.activiticustom.TaskCustomService"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="usertask2" name="400" activiti:assignee="400">
+      <extensionElements>
+        <activiti:taskListener event="create" class="com.chanjet.gongzuoquan.workflow.activiticustom.TaskCustomService">
+          <activiti:field name="informPerson">
+            <activiti:string><![CDATA[6000004545]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="usertask0" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_gzq-41b17af6-c027-61a8-91ee-1d68bcaed84b">
+    <bpmndi:BPMNPlane bpmnElement="gzq-41b17af6-c027-61a8-91ee-1d68bcaed84b" id="BPMNPlane_gzq-41b17af6-c027-61a8-91ee-1d68bcaed84b">
+      <bpmndi:BPMNShape bpmnElement="usertask0" id="BPMNShape_usertask0">
+        <omgdc:Bounds height="55.0" width="105.0" x="290.0" y="290.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746" id="BPMNShape_gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746">
+        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="290.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="500.0" y="113.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="535.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75.0" y="317.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="317.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="342.0" y="290.0"></omgdi:waypoint>
+        <omgdi:waypoint x="342.0" y="165.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="395.0" y="137.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="140.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="552.0" y="168.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="310.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

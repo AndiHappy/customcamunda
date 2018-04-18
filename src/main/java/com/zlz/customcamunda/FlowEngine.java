@@ -1,26 +1,57 @@
 package com.zlz.customcamunda;
 
+import java.io.File;
+import java.io.InputStream;
+
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.zlz.customcamunda.server.CustomRepositoryService;
+import com.zlz.customcamunda.util.Result;
 
 public class FlowEngine extends SpringProcessEngineConfiguration {
+	
+	private static Logger log = LoggerFactory.getLogger(FlowEngine.class);
+
 
 	// 引擎启动的时候，承接activiti的Behavior的行为模式
 	@Override
 	public ProcessEngine buildProcessEngine() {
 		return super.buildProcessEngine();
 	}
-	
-	/**
-	 * 
-	 * */
-	public CustomRepositoryService getCustomRepositoryService() {
-	    return (CustomRepositoryService) repositoryService;
-	  }
 
-	
+	/**
+	 * 扩展的静态服务
+	 */
+	public CustomRepositoryService getCustomRepositoryService() {
+		return (CustomRepositoryService) repositoryService;
+	}
+
+	/**
+	 * 直接的校验bpmn文件
+	 */
+	public boolean validateBpmn(File file) {
+		BpmnModelInstance modelInstance = Bpmn.readModelFromFile(file);
+		// validate the model
+		Bpmn.validateModel(modelInstance);
+
+		return modelInstance != null;
+	}
+
+	/**
+	 * 直接的校验bpmn文件
+	 */
+	public boolean validateBpmn(InputStream input) {
+		BpmnModelInstance modelInstance = Bpmn.readModelFromStream(input);
+		// validate the model
+		Bpmn.validateModel(modelInstance);
+
+		return modelInstance != null;
+	}
 
 	// /**
 	// * 获取代办的事件

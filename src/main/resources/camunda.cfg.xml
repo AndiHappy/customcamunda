@@ -27,17 +27,28 @@
 		<property name="minIdle" value="10" />
 	</bean> -->
 	
-	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/customcamunda?useSSL=false" />
 		<property name="username" value="root" />
 		<property name="password" value="root" />
-		<!-- <property name="initialSize" value="20" />
+		<property name="initialSize" value="20" />
 		<property name="maxActive" value="50" />
 		<property name="maxIdle" value="20" />
-		<property name="minIdle" value="10" /> -->
+		<property name="minIdle" value="10" />
 	</bean>
+	
+   <bean id="activitiDataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <property name="targetDataSource">
+            <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+                <property name="driverClass" value="com.mysql.jdbc.Driver" />
+                <property name="url" value="jdbc:mysql://localhost:3306/customcamunda?useSSL=false" />
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+            </bean>
+        </property>
+    </bean>
 
 	<!-- 事务处理 -->
 	<bean id="transactionManager"
