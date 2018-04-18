@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:thrift="http://gzq.chanjet.com/cms/schema/thrift"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://gzq.chanjet.com/cms/schema/thrift http://gzq.chanjet.com/cms/schema/thrift/thrift.xsd">
+	<!-- <context:property-placeholder location="zlzflow.properties" /> -->
+
+	<!--数据库配置 -->
+	<!-- <bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:mem:camunda;DB_CLOSE_DELAY=1000" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="initialSize" value="20" />
+		<property name="maxActive" value="50" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" />
+	</bean> -->
+	
+	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/customcamunda?useSSL=false" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+		<!-- <property name="initialSize" value="20" />
+		<property name="maxActive" value="50" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" /> -->
+	</bean>
+
+	<!-- 事务处理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="activitiDataSource" />
+	</bean>
+	
+	<!-- Engine的实时服务 -->
+	<bean id="customRuntimeServiceImpl" class="com.zlz.customcamunda.server.CustomRuntimeServiceImpl">
+	</bean>
+	
+	<!-- Engine的扩展的task服务 -->
+	<bean id="customTaskServiceImpl" class="com.zlz.customcamunda.server.CustomTaskServiceImpl"></bean>
+	
+	<!-- Engine的扩展的RepositoryService服务 -->
+	<bean id="customRepositoryService" class="com.zlz.customcamunda.server.CustomRepositoryService"></bean>
+	
+
+	<bean id="processEngineConfiguration" class="com.zlz.customcamunda.FlowEngine">
+
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/customcamunda?useSSL=false" />
+		<property name="jdbcDriver" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUsername" value="root" />
+		<property name="jdbcPassword" value="root" />
+
+		<property name="databaseSchemaUpdate" value="false" />
+
+		<property name="jobExecutorActivate" value="false" />
+
+		<property name="transactionManager" ref="transactionManager" />
+		
+		<property name="runtimeService" ref="customRuntimeServiceImpl"> </property>
+		<property name="taskService" ref="customTaskServiceImpl"></property>
+		<property name="repositoryService" ref="customRepositoryService" />
+		<property name="mailServerHost" value="mail.my-corp.com" />
+		<property name="mailServerPort" value="5025" />
+	</bean>
+
+</beans>
