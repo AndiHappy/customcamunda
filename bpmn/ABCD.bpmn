@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://www.activiti.org/test" exporter="Camunda Modeler" exporterVersion="1.13.0">
   <process id="gzq-41b17af6-c027-61a8-91ee-1d68bcaed84b" name="template" isExecutable="true">
-    <userTask id="usertask0" name="部门主管" camunda:assignee="ROLE">
+    <userTask id="usertask0" name="部门经理" camunda:assignee="ROLE">
       <extensionElements>
         <camunda:taskListener event="create" class="com.zlz.customcamunda.listender.TaskServiceCreateListender">
           <camunda:field name="informPerson">
@@ -12,7 +12,7 @@
     </userTask>
     <startEvent id="gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746" name="流程开始" />
     <sequenceFlow id="flow1" sourceRef="gzq-e89a33cf-c1c4-f588-a7d4-9eeff786c746" targetRef="usertask0" />
-    <userTask id="usertask1" name="部门主管" camunda:assignee="ROLE">
+    <userTask id="usertask1" name="董事会成员" camunda:assignee="ROLE">
       <extensionElements>
         <camunda:taskListener event="create" class="com.zlz.customcamunda.listender.TaskServiceCreateListender" />
       </extensionElements>

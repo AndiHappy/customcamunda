@@ -7,14 +7,14 @@
     <bpmn:endEvent id="EndEvent_12ghdmx">
       <bpmn:incoming>SequenceFlow_0r3ejwc</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0r3ejwc" sourceRef="Task_03u1ehm" targetRef="EndEvent_12ghdmx" />
-    <bpmn:sequenceFlow id="SequenceFlow_1snv1dz" sourceRef="Task_0x6jop0" targetRef="Task_03u1ehm" />
-    <bpmn:sequenceFlow id="SequenceFlow_0269jo0" sourceRef="StartEvent_0oaymuu" targetRef="Task_0x6jop0" />
-    <bpmn:userTask id="Task_0x6jop0" camunda:assignee="1000">
+    <bpmn:sequenceFlow id="SequenceFlow_0r3ejwc" sourceRef="Task_02" targetRef="EndEvent_12ghdmx" />
+    <bpmn:sequenceFlow id="SequenceFlow_1snv1dz" sourceRef="Task_1" targetRef="Task_02" />
+    <bpmn:sequenceFlow id="SequenceFlow_0269jo0" sourceRef="StartEvent_0oaymuu" targetRef="Task_1" />
+    <bpmn:userTask id="Task_1" name="1000" camunda:assignee="1000">
       <bpmn:incoming>SequenceFlow_0269jo0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1snv1dz</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_03u1ehm" camunda:candidateUsers="2000">
+    <bpmn:userTask id="Task_02" name="2000" camunda:candidateUsers="2000">
       <bpmn:incoming>SequenceFlow_1snv1dz</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0r3ejwc</bpmn:outgoing>
     </bpmn:userTask>
@@ -54,10 +54,10 @@
           <dc:Bounds x="290" y="120.5" width="0" height="13" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0c0d71g_di" bpmnElement="Task_0x6jop0">
+      <bpmndi:BPMNShape id="UserTask_0c0d71g_di" bpmnElement="Task_1">
         <dc:Bounds x="319" y="102" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_1a70rzm_di" bpmnElement="Task_03u1ehm">
+      <bpmndi:BPMNShape id="UserTask_1a70rzm_di" bpmnElement="Task_02">
         <dc:Bounds x="517" y="102" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

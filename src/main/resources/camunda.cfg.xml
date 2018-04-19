@@ -81,8 +81,8 @@
 		<property name="transactionManager" ref="transactionManager" />
 		
 		<property name="runtimeService" ref="customRuntimeServiceImpl"> </property>
-		<property name="taskService" ref="customTaskServiceImpl"></property>
-		<property name="repositoryService" ref="customRepositoryService" />
+ 		<property name="taskService" ref="customTaskServiceImpl"></property>
+ 		<property name="repositoryService" ref="customRepositoryService" />
 		<property name="mailServerHost" value="mail.my-corp.com" />
 		<property name="mailServerPort" value="5025" />
 	</bean>

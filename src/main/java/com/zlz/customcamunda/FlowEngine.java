@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zlz.customcamunda.server.CustomRepositoryService;
-import com.zlz.customcamunda.util.Result;
+import com.zlz.customcamunda.server.CustomTaskServiceImpl;
 
 public class FlowEngine extends SpringProcessEngineConfiguration {
 	
@@ -29,6 +29,13 @@ public class FlowEngine extends SpringProcessEngineConfiguration {
 	 */
 	public CustomRepositoryService getCustomRepositoryService() {
 		return (CustomRepositoryService) repositoryService;
+	}
+	
+	/**
+	 * 扩展的任务服务
+	 */
+	public CustomTaskServiceImpl getCustomTaskService() {
+		return (CustomTaskServiceImpl) taskService;
 	}
 
 	/**
@@ -49,7 +56,6 @@ public class FlowEngine extends SpringProcessEngineConfiguration {
 		BpmnModelInstance modelInstance = Bpmn.readModelFromStream(input);
 		// validate the model
 		Bpmn.validateModel(modelInstance);
-
 		return modelInstance != null;
 	}
 

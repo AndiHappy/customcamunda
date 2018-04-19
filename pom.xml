@@ -47,13 +47,13 @@
 			<version>7.8.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine-spring</artifactId>
 			<version>7.8.0</version>
 		</dependency>
 
+		<!-- camunda 工作流引擎 rest webApp的支持 -->
 
 		<dependency>
 			<groupId>com.h2database</groupId>
