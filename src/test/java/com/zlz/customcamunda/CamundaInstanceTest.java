@@ -7,6 +7,8 @@ import org.camunda.bpm.engine.impl.persistence.entity.ProcessInstanceWithVariabl
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.bpm.model.bpmn.instance.Definitions;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,20 @@ public class CamundaInstanceTest extends CamundaBaseTest{
 	private Logger log = LoggerFactory.getLogger("CamundaInsTest");
 
 	private static PropertiesUtil util = new PropertiesUtil();
+	
+	@Test
+	public void TaskListender(){
+		if(this.prodef != null){
+			ProcessInstance instance = engine.getRuntimeService().startProcessInstanceById(this.prodef.getId());
+			log.info("instance: {} started!",instance.getId());
+			util.setPropertiesValue("instanceId", instance.getId());
+			
+			ProcessInstanceWithVariablesImpl instancetmp = (ProcessInstanceWithVariablesImpl) instance;
+			List<TaskEntity> tasks = instancetmp.getExecutionEntity().getTasks();
+			TaskEntity task = tasks.get(0);
+			log.info("todo task:{}",task);
+		}
+	}
 	
 	@Test
 	public void startIns(){
@@ -44,6 +60,17 @@ public class CamundaInstanceTest extends CamundaBaseTest{
 			taskId = task.getId();
 			util.setPropertiesValue("taskId", taskId);
 		}
+	}
+	
+	@Test
+	public void ProcessDefinitonToModelInstance(){
+		if(this.prodef != null){
+			String processDefinitionId = this.prodef.getId();
+			  BpmnModelInstance modelInstance = engine.getCustomRepositoryService().getBpmnModelInstance(processDefinitionId);
+			  Definitions definitions = modelInstance.getDefinitions();
+			  log.info(definitions.getDomElement().toString());
+		}
+		
 	}
 	
 	

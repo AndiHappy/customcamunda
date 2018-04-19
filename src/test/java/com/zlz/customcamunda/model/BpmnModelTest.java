@@ -3,6 +3,7 @@ package com.zlz.customcamunda.model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
+import org.camunda.bpm.model.bpmn.instance.SubProcess;
 import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
@@ -24,6 +26,8 @@ import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zlz.customcamunda.javaDelegate.WsDelegate;
 
 public class BpmnModelTest {
 	
@@ -50,17 +54,68 @@ public class BpmnModelTest {
 //		Collection<ModelElementInstance> taskInstances = modelInstance.getModelElementsByType(taskType);
 //		
 		
+//		
+//		buildSimpleWorkFlowHasNoBPMNDiagram();
+//		
+//		
+//		buildGateWayWorkFlowHasNoDiagram();
 		
-		buildSimpleWorkFlowHasNoBPMNDiagram();
+		buildProcess();
+	}
+
+	private static void buildProcess() {
+		// Directly define the subprocess
+		BpmnModelInstance modelInstance = Bpmn.createProcess().name("processinstance")
+		  .startEvent()
+		  .subProcess()
+		    .camundaAsync()
+		    .embeddedSubProcess()
+		      .startEvent()
+		      .userTask()
+		      .endEvent()
+		    .subProcessDone()
+		  .serviceTask()
+		    .camundaClass(WsDelegate.class)
+		    .camundaDelegateExpression("${successBean}")
+		  .endEvent()
+		  .done();
+
+		// Detach the subprocess building
+		modelInstance = Bpmn.createProcess()
+		  .startEvent()
+		  .subProcess("subProcess")
+		  .serviceTask()
+		  .endEvent()
+		  .done();
+
+		SubProcess subProcess = (SubProcess) modelInstance.getModelElementById("subProcess");
+		subProcess.builder()
+		  .camundaAsync()
+		  .embeddedSubProcess()
+		    .startEvent()
+		    .userTask()
+		    .endEvent();	
 		
+		try {
+			String bpmnfile = Bpmn.convertToString(modelInstance);
+			File file = new File("./bpmn/processinstance.bpmn");
+			if(file.exists()){
+				file.delete();
+			}
+			FileWriter writer = new FileWriter(file);
+			writer.write(bpmnfile);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		buildGateWayWorkFlowHasNoDiagram();
 	}
 
 	/**
 	 * 创建一个固定的流程，但是没有图像，因为压根没有生成：bpmndi:BPMNDiagram 节点
 	 * */
-	private static void buildGateWayWorkFlowHasNoDiagram() throws IOException {
+	public static void buildGateWayWorkFlowHasNoDiagram() throws IOException {
 		// create an empty model
 		BpmnModelInstance modelInstance = Bpmn.createEmptyModel();
 		Definitions definitions = modelInstance.newInstance(Definitions.class);
@@ -96,7 +151,7 @@ public class BpmnModelTest {
 	/**
 	 * 创建一个固定的流程，但是没有图像，因为压根没有生成：bpmndi:BPMNDiagram 节点
 	 * */
-	private static void buildSimpleWorkFlowHasNoBPMNDiagram() throws IOException {
+	public static void buildSimpleWorkFlowHasNoBPMNDiagram() throws IOException {
 		// create an empty model
 		BpmnModelInstance modelInstance = Bpmn.createEmptyModel();
 		Definitions definitions = modelInstance.newInstance(Definitions.class);

@@ -26,9 +26,6 @@ camunda:class="org.camunda.bpm.MyJavaDelegate" />
 public class ServiceTaskJavaDelegate implements JavaDelegate {
 
 	private static Logger log = LoggerFactory.getLogger(ServiceTaskJavaDelegate.class);
-	
-	//成员变量是不能注入的，只能通过new或者单例的模式拿到
-	//因为每次执行的时候，这个类就是直接的发射的形式得到的
 
     public void execute(DelegateExecution execution) throws Exception {
      

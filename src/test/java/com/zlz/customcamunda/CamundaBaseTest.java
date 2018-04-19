@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
@@ -17,7 +16,6 @@ import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.ManagementService;
 import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
@@ -31,12 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * 查询时间:[363, 40, 43, 34, 34, 29, 24, 27, 23, 24, 22, 22, 19, 24, 23, 31, 21,
- * 23, 19, 19, 16, 21, 22, 23, 19, 25, 20, 20, 17, 18, 19, 22, 23, 22, 20, 19,
- * 17, 15, 14, 17] Camunda 引擎最好有一个预热的过程，不然第一次的操作可能会比较的慢
- */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:camunda.cfg.xml")
 public class CamundaBaseTest {
@@ -47,61 +39,49 @@ public class CamundaBaseTest {
 	protected FlowEngine engine;
 
 	protected String orgId = "001";
-	protected String prodefName = "001";
-	protected String prodefKey = "test1";
-	protected String resourceName = "./bpmn/test1.bpmn";
+	protected String resourceName = "./bpmn/ABCD.bpmn";
 	protected String workFlowDefinitionText = null;
 	protected String workflowDefinitionId = null;
 	protected ProcessDefinition prodef = null;
-	protected boolean update = true;
+	protected boolean update = false;
 
 	@Before
 	public void testFindProcessDef() {
 		try {
 			// 准备流程定义，加载到测试用例中
 			engine.buildProcessEngine();
-			int num = 1;
-			double sum = 0;
 			log.info("初始化引擎");
-			ArrayList<Integer> value = new ArrayList<Integer>();
-
-			// 校验流程文件
-			InputStream inputStream = new FileInputStream(new File(resourceName));
-			boolean validate = engine.getCustomRepositoryService().validateBpmnFile(inputStream);
-			log.info("校验文件:{},结果:{}", resourceName, validate);
-			if (validate) {
-				int deplyid = 425;
-				for (int i = 0; i < num; i++) {
-					if (!update) {
-						long time = System.currentTimeMillis();
-						ProcessDefinition prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deplyid + "").singleResult();
-						if (prodef != null) {
-							this.prodef = prodef;
-						} else {
-							Deployment deployment = engine.getRepositoryService().createDeployment().addInputStream(resourceName, inputStream).deploy();
-							String deployid = deployment.getId();
-							this.prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployid).singleResult();
-							log.info("初始化引擎:{}", this.prodef.getId());
-						}
-						long time1 = System.currentTimeMillis();
-						value.add((int) (time1 - time));
-						sum = sum + (time1 - time);
-						deplyid = deplyid + 3;
-					} else {
-
-						Deployment deployment = engine.getRepositoryService().createDeployment().addInputStream(resourceName, inputStream).deploy();
-						String deployid = deployment.getId();
-						log.info("deployid:{}", deployid);
-						this.prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployid).singleResult();
-						log.info("初始化引擎:{}", this.prodef.getId());
-					}
+			if (!update) {
+				ProcessDefinition prodef = engine.getRepositoryService().createProcessDefinitionQuery().processDefinitionResourceName(resourceName).singleResult();
+				if (prodef != null) {
+					this.prodef = prodef;
+				} else {
+					deployProcessDefinition();
 				}
+			} else {
+				deployProcessDefinition();
 			}
-			log.info("查询时间:{}", value.toString());
-			log.info("平均时间是:{} ms", sum / num);
-		} catch (FileNotFoundException e) {
+
+		} catch (
+
+		Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void deployProcessDefinition() throws FileNotFoundException {
+		// 校验流程文件
+		boolean validate = engine.validateBpmn(new File(resourceName));
+		log.info("校验文件:{},结果:{}", resourceName, validate);
+		if (validate) {
+			InputStream inputStream = new FileInputStream(new File(resourceName));
+			Deployment deployment = engine.getRepositoryService().createDeployment().addInputStream(resourceName, inputStream).deploy();
+			String deployid = deployment.getId();
+			log.info("deployid:{}", deployid);
+			this.prodef = engine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployid).singleResult();
+			log.info("初始化引擎:{}", this.prodef.getId());
+		}
+
 	}
 
 	@Test
