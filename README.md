@@ -1,5 +1,6 @@
-# customcamunda
-camunda流程引擎扩展，支持中国方式的流程运转，流程定义
+### 流程引擎Camunda 解析说明
+
+camunda流程引擎，2003年Fork自Activiti，逐渐的发展为有自己的特色的一款高效，易用，嵌入式的引擎。
 
 1.  camunda提供一个免费的BPMN2.0的构建工具：Camunda Modeler：[具体的下载地址](https://camunda.com/download/modeler/)
 
