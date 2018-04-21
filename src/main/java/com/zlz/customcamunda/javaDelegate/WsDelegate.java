@@ -32,9 +32,11 @@ public class WsDelegate implements JavaDelegate {
 		// }
 		// }
 		Object response = operation.getValue(execution);
+		Object parameters1 =  parameters.getValue(execution);
 		if (returnValue != null) {
 			String returnVariableName = (String) returnValue.getValue(execution);
 			execution.setVariable(returnVariableName, response);
+			execution.setVariable("parameters",parameters1);
 		}
 	}
 }

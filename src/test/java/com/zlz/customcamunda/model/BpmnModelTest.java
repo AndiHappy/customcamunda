@@ -1,12 +1,8 @@
 package com.zlz.customcamunda.model;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
 
 import org.camunda.bpm.model.bpmn.Bpmn;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
@@ -15,15 +11,13 @@ import org.camunda.bpm.model.bpmn.instance.Definitions;
 import org.camunda.bpm.model.bpmn.instance.EndEvent;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.ParallelGateway;
+import org.camunda.bpm.model.bpmn.instance.Process;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
 import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.StartEvent;
 import org.camunda.bpm.model.bpmn.instance.SubProcess;
-import org.camunda.bpm.model.bpmn.instance.Process;
-import org.camunda.bpm.model.bpmn.instance.Task;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
-import org.camunda.bpm.model.xml.type.ModelElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +25,7 @@ import com.zlz.customcamunda.javaDelegate.WsDelegate;
 
 public class BpmnModelTest {
 	
-	private static Logger log = LoggerFactory.getLogger("modle");
+	public static Logger log = LoggerFactory.getLogger("modle");
 
 	
 	public static void main(String[] args) throws IOException{
@@ -68,7 +62,7 @@ public class BpmnModelTest {
 		BpmnModelInstance modelInstance = Bpmn.createProcess().name("processinstance")
 		  .startEvent()
 		  .subProcess()
-		    .camundaAsync()
+		    .camundaAsyncBefore(true)
 		    .embeddedSubProcess()
 		      .startEvent()
 		      .userTask()
@@ -90,7 +84,7 @@ public class BpmnModelTest {
 
 		SubProcess subProcess = (SubProcess) modelInstance.getModelElementById("subProcess");
 		subProcess.builder()
-		  .camundaAsync()
+		  .camundaAsyncBefore(true)
 		  .embeddedSubProcess()
 		    .startEvent()
 		    .userTask()

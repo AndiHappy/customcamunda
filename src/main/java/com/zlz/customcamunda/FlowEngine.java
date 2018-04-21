@@ -15,7 +15,7 @@ import com.zlz.customcamunda.server.CustomTaskServiceImpl;
 
 public class FlowEngine extends SpringProcessEngineConfiguration {
 	
-	private static Logger log = LoggerFactory.getLogger(FlowEngine.class);
+	public static Logger log = LoggerFactory.getLogger(FlowEngine.class);
 
 
 	// 引擎启动的时候，承接activiti的Behavior的行为模式
