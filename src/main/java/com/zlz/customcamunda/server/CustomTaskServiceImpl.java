@@ -44,8 +44,8 @@ public class CustomTaskServiceImpl extends TaskServiceImpl {
 	}
 	
 	//自由跳转
-	public TaskEntity move(String ActivityId, Map<String, Object> variables) {
-		return commandExecutor.execute(new MoveTowarsCmd(ActivityId, variables));
+	public TaskEntity move(String currentTaskId,String ActivityId, Map<String, Object> variables) {
+		return commandExecutor.execute(new MoveTowarsCmd(currentTaskId,ActivityId, variables));
 	}
 
 	@Override

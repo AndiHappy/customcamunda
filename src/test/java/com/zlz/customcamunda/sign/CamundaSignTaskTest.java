@@ -22,7 +22,6 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.impl.persistence.entity.ProcessInstanceWithVariablesImpl;
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
@@ -332,7 +331,6 @@ public class CamundaSignTaskTest {
 				.processInstanceId(util.getPropertyValue("instanceId")).singleResult();
 		if (task != null) {
 			String taskId = task.getId();
-			Map<String, Object> variables = new HashMap<String, Object>();
 			engine.getTaskService().complete(taskId);
 			task = (TaskEntity) engine.getTaskService().createTaskQuery()
 					.processInstanceId(util.getPropertyValue("instanceId")).singleResult();
@@ -344,32 +342,4 @@ public class CamundaSignTaskTest {
 		}
 	}
 
-	@Test
-	public void getService() {
-		// 准备流程定义，加载到测试用例中，必须有
-		engine.buildProcessEngine();
-		ProcessEngine processEngine = engine.getProcessEngine();
-		RepositoryService repositoryService = processEngine.getRepositoryService();
-		log.info(repositoryService.toString());
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		log.info(runtimeService.toString());
-		TaskService taskService = processEngine.getTaskService();
-		log.info(taskService.toString());
-		IdentityService IdentityService = processEngine.getIdentityService();
-		log.info(IdentityService.toString());
-		FormService formService = processEngine.getFormService();
-		log.info(formService.toString());
-		HistoryService historyService = processEngine.getHistoryService();
-		log.info(historyService.toString());
-		ManagementService managementService = processEngine.getManagementService();
-		log.info(managementService.toString());
-		FilterService filterService = processEngine.getFilterService();
-		log.info(filterService.toString());
-		ExternalTaskService externalTaskService = processEngine.getExternalTaskService();
-		log.info(externalTaskService.toString());
-		CaseService caseService = processEngine.getCaseService();
-		log.info(caseService.toString());
-		DecisionService decisionService = processEngine.getDecisionService();
-		log.info(decisionService.toString());
-	}
 }
