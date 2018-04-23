@@ -12,6 +12,7 @@ import com.zlz.customcamunda.cmd.task.AfterSignCmd;
 import com.zlz.customcamunda.cmd.task.BackTaskCmd;
 import com.zlz.customcamunda.cmd.task.BeforeSignCmd;
 import com.zlz.customcamunda.cmd.task.CusTomCompleteTaskCmd;
+import com.zlz.customcamunda.cmd.task.MoveTowarsCmd;
 
 @Component
 public class CustomTaskServiceImpl extends TaskServiceImpl {
@@ -32,14 +33,20 @@ public class CustomTaskServiceImpl extends TaskServiceImpl {
 		return commandExecutor.execute(new BackTaskCmd(taskId, variables));
 	}
 
-	public TaskEntity beforeSign(String taskId, Map<String, Object> variables, boolean localScope, String assignee) {
-		return commandExecutor.execute(new BeforeSignCmd(taskId, variables, localScope, assignee));
+	//前加签
+	public TaskEntity beforeSign(String taskId, Map<String, Object> variables, String assignee) {
+		return commandExecutor.execute(new BeforeSignCmd(taskId, variables, assignee));
 	}
 	
-	public TaskEntity afterSign(String taskId, Map<String, Object> variables, boolean localScope, String assignee) {
-		return commandExecutor.execute(new AfterSignCmd(taskId, variables, localScope, assignee));
+	//后加签
+	public TaskEntity afterSign(String taskId, Map<String, Object> variables, String assignee) {
+		return commandExecutor.execute(new AfterSignCmd(taskId, variables, assignee));
 	}
 	
+	//自由跳转
+	public TaskEntity move(String ActivityId, Map<String, Object> variables) {
+		return commandExecutor.execute(new MoveTowarsCmd(ActivityId, variables));
+	}
 
 	@Override
 	public void complete(String taskId) {

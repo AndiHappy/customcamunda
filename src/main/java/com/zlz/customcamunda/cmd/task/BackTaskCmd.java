@@ -5,18 +5,15 @@ import static org.camunda.bpm.engine.impl.util.EnsureUtil.ensureNotNull;
 import java.util.List;
 import java.util.Map;
 
-import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.ProcessEngineLogger;
 import org.camunda.bpm.engine.impl.bpmn.behavior.GatewayActivityBehavior;
 import org.camunda.bpm.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.camunda.bpm.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.camunda.bpm.engine.impl.cfg.CommandChecker;
-import org.camunda.bpm.engine.impl.context.Context;
 import org.camunda.bpm.engine.impl.db.EnginePersistenceLogger;
 import org.camunda.bpm.engine.impl.interceptor.Command;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
-import org.camunda.bpm.engine.impl.persistence.entity.SuspensionState;
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.impl.pvm.PvmTransition;
 import org.camunda.bpm.engine.impl.pvm.process.ActivityImpl;
@@ -33,7 +30,7 @@ import com.zlz.customcamunda.util.exception.BaseIllegalException;
  *
  * @version 2018年3月21日 下午4:20:35
  */
-public class BackTaskCmd implements Command<List<TaskEntity>> {
+public class BackTaskCmd extends BaseCmd implements Command<List<TaskEntity>> {
 
 	private Logger log = LoggerFactory.getLogger("BackTaskCmd");
 	protected static final EnginePersistenceLogger LOG = ProcessEngineLogger.PERSISTENCE_LOGGER;
@@ -41,8 +38,6 @@ public class BackTaskCmd implements Command<List<TaskEntity>> {
 	private String taskId;
 
 	private Map<String, Object> variables;
-
-	private boolean skipCustomListeners = true;
 
 	public static final String DELETE_REASON_DELETED = "back_action";
 
@@ -80,7 +75,7 @@ public class BackTaskCmd implements Command<List<TaskEntity>> {
 			if (back != null) {
 				log.info("find back activiti:{}", back.toString());
 				ExecutionEntity execution = task.getExecution();
-				execution = complete(task, DELETE_REASON_DELETED, this.getVariables());
+				execution = completeTaskOnlyNotLeave(task, DELETE_REASON_DELETED, this.getVariables());
 				execution.setActivity(back);
 				execution.performOperation(PvmAtomicOperation.ACTIVITY_START);
 				List<TaskEntity> tasks = task.getExecution().getTasks();
@@ -91,43 +86,6 @@ public class BackTaskCmd implements Command<List<TaskEntity>> {
 		return null;
 	}
 
-	// 完成这个任务
-	private ExecutionEntity complete(TaskEntity task, String deleteReasonDeleted, Map<String, Object> variables2) {
-		log.info("complete : {} ,reason : {}", task.getId(), deleteReasonDeleted);
-		// if the task is associated with a case
-		// execution then call complete on the
-		// associated case execution. The case
-		// execution handles the completion of
-		// the task.
-		if (task.getCaseExecutionId() != null) {
-			task.getCaseExecution().manualComplete();
-		}
-
-		// in the other case:
-		// ensure the the Task is not suspended
-		if (task.getSuspensionState() == SuspensionState.SUSPENDED.getStateCode()) {
-			throw LOG.suspendedEntityException("task", task.getId());
-		}
-
-		// trigger TaskListener.complete event
-		task.fireEvent(TaskListener.EVENTNAME_COMPLETE);
-
-		// delete the task
-		Context.getCommandContext().getTaskManager().deleteTask(task, TaskEntity.DELETE_REASON_COMPLETED, false, skipCustomListeners);
-
-		// if the task is associated with a
-		// execution (and not a case execution)
-		// then call signal an the associated
-		// execution.
-		if (task.getExecutionId() != null) {
-			ExecutionEntity execution = task.getExecution();
-			execution.removeTask(task);
-			return execution;
-		}
-		
-		return null;
-
-	}
 
 	protected void checkCompleteTask(TaskEntity task, CommandContext commandContext) {
 		for (CommandChecker checker : commandContext.getProcessEngineConfiguration().getCommandCheckers()) {
